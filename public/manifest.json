@@ -1,15 +1,6 @@
 {
-  "name": "PWAGram - Share Photos",
+  "name": "Instagram as Progressive Web App",
   "short_name": "PWAGram",
-  "start_url": "/index.html",
-  "scope": ".",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#3f51b5",
-  "description": "PWAGram - Share photos on the go from wherever you are.",
-  "dir": "ltr",
-  "lang": "en-UK",
-  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "/src/images/icons/app-icon-48x48.png",
@@ -47,5 +38,13 @@
       "sizes": "512x512"
     }
   ],
-  "related_applications": []
+  "start_url": "/index.html",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fff",
+  "theme_color": "#3f51b5",
+  "description": "A simple Instagram Clone, implementing a lot of PWA love.",
+  "dir": "ltr",
+  "lang": "en-US"
 }
