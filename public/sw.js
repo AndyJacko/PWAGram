@@ -1,4 +1,7 @@
-var CACHE_STATIC_NAME = "static-v15";
+importScripts("/src/js/idb.js");
+importScripts("/src/js/utility.js");
+
+var CACHE_STATIC_NAME = "static-v18";
 var CACHE_DYNAMIC_NAME = "dynamic-v2";
 var STATIC_FILES = [
   "/",
@@ -6,6 +9,8 @@ var STATIC_FILES = [
   "/offline.html",
   "/src/js/app.js",
   "/src/js/feed.js",
+  "/src/js/idb.js",
+  "/src/js/utility.js",
   "/src/js/promise.js",
   "/src/js/fetch.js",
   "/src/js/material.min.js",
@@ -60,25 +65,30 @@ self.addEventListener("activate", function (event) {
 function isInArray(string, array) {
   var cachePath;
   if (string.indexOf(self.origin) === 0) {
-    // request targets domain where we serve the page from (i.e. NOT a CDN)
-    console.log("matched ", string);
-    cachePath = string.substring(self.origin.length); // take the part of the URL AFTER the domain (e.g. after localhost:8080)
+    cachePath = string.substring(self.origin.length);
   } else {
-    cachePath = string; // store the full request (for CDNs)
+    cachePath = string;
   }
   return array.indexOf(cachePath) > -1;
 }
 
 self.addEventListener("fetch", function (event) {
-  var url = "https://httpbin.org/get";
+  var url = "https://pwagram-aj-default-rtdb.europe-west1.firebasedatabase.app/posts.json";
   if (event.request.url.indexOf(url) > -1) {
     event.respondWith(
-      caches.open(CACHE_DYNAMIC_NAME).then(function (cache) {
-        return fetch(event.request).then(function (res) {
-          // trimCache(CACHE_DYNAMIC_NAME, 3);
-          cache.put(event.request, res.clone());
-          return res;
-        });
+      fetch(event.request).then(function (res) {
+        var clonedRes = res.clone();
+        clearAllData("posts")
+          .then(() => {
+            return clonedRes.json();
+          })
+          .then((data) => {
+            for (var key in data) {
+              writeData("posts", data[key]);
+            }
+          });
+
+        return res;
       })
     );
   } else if (isInArray(event.request.url, STATIC_FILES)) {
